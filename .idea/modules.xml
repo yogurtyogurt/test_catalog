@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://C:/web2py/applications/TAT/.idea/TAT.iml" filepath="C:/web2py/applications/TAT/.idea/TAT.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../cerca_richiesta/.idea/cerca_richiesta.iml" filepath="$PROJECT_DIR$/../cerca_richiesta/.idea/cerca_richiesta.iml" />
+      <module fileurl="file://C:/web2py/applications/pwsearch/.idea/pwsearch.iml" filepath="C:/web2py/applications/pwsearch/.idea/pwsearch.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/test_catalog.iml" filepath="$PROJECT_DIR$/.idea/test_catalog.iml" />
+    </modules>
+  </component>
+</project>
