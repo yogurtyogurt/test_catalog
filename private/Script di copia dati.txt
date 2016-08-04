@@ -5,7 +5,7 @@ CREATE TABLE old_catalog.metodi AS SELECT * FROM catalogo.metodi;
 CREATE TABLE old_catalog.unitaoperativa AS SELECT * FROM catalogo.unitaoperativa;
 CREATE TABLE old_catalog.provette AS SELECT * FROM catalogo.provette;
 CREATE TABLE old_catalog.settori AS SELECT * FROM catalogo.settori;
-CREATE TABLE old_catalog.unitaoperativa AS SELECT * FROM catalogo.unitaoperativa;
+
 
 
 -- aggiorno i settori nel vecchio db
