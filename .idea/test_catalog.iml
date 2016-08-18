@@ -8,6 +8,7 @@
     <orderEntry type="module" module-name="TAT" />
     <orderEntry type="module" module-name="cerca_richiesta" />
     <orderEntry type="module" module-name="pwsearch" />
+    <orderEntry type="module" module-name="Domotica" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Web2Py" />

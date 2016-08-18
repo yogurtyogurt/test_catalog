@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://C:/web2py/applications/TAT/.idea/TAT.iml" filepath="C:/web2py/applications/TAT/.idea/TAT.iml" />
+      <module fileurl="file://D:/Programmazione/Python/Domotica/.idea/Domotica.iml" filepath="D:/Programmazione/Python/Domotica/.idea/Domotica.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../TAT/.idea/TAT.iml" filepath="$PROJECT_DIR$/../TAT/.idea/TAT.iml" />
       <module fileurl="file://$PROJECT_DIR$/../cerca_richiesta/.idea/cerca_richiesta.iml" filepath="$PROJECT_DIR$/../cerca_richiesta/.idea/cerca_richiesta.iml" />
-      <module fileurl="file://C:/web2py/applications/pwsearch/.idea/pwsearch.iml" filepath="C:/web2py/applications/pwsearch/.idea/pwsearch.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../pwsearch/.idea/pwsearch.iml" filepath="$PROJECT_DIR$/../pwsearch/.idea/pwsearch.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/test_catalog.iml" filepath="$PROJECT_DIR$/.idea/test_catalog.iml" />
     </modules>
   </component>

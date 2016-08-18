@@ -17,7 +17,7 @@ myconf = AppConfig(reload=True)
 
 if not request.env.web2py_runtime_gae:
     ## if NOT running on Google App Engine use SQLite or other DB
-    db = DAL(myconf.take('db.uri'), pool_size=myconf.take('db.pool_size', cast=int), check_reserved=['all'])
+    db = DAL(myconf.take('db.uri'), pool_size=10, check_reserved=['all'])
 else:
     ## connect to Google BigTable (optional 'google:datastore://namespace')
     db = DAL('google:datastore+ndb')
@@ -58,9 +58,18 @@ service = Service()
 plugins = PluginManager()
 
 
+#departements
+db.define_table('unitaoperativa',
+                Field('descrizione','string',length=255,required=True,label=T('Description')),
+                Field('responsabile','string',required=True,label=T('Director')),
+                format='%(descrizione)s',
+               )
+db.unitaoperativa.descrizione.requires=IS_NOT_EMPTY()
+db.unitaoperativa.descrizione.requires=IS_NOT_IN_DB(db,'unitaoperativa.descrizione')
+
 #extra fields for users
-auth.settings.extra_fields['auth_group']= [ Field('id_unitaoperativa','integer'),]#departement
-auth.settings.extra_fields['auth_user']= [ Field('id_unitaoperativa','integer'),]#departement
+auth.settings.extra_fields['auth_group']= [ Field('id_unitaoperativa','reference unitaoperativa'),]#departement
+auth.settings.extra_fields['auth_user']= [ Field('id_unitaoperativa','reference unitaoperativa'),]#departement
 
 
 
@@ -100,6 +109,9 @@ auth.settings.actions_disabled.append('register')
 
 
 
+
+
+
 # uploaded file handling
 db.define_table('local_file',
                  Field('file_name','upload',required=True,autodelete=True),
@@ -111,23 +123,14 @@ db.define_table('local_file',
 db.local_file.tipo.requires=IS_IN_SET(('immagine','PDF','altro'))
 
 
-#departements
-db.define_table('unitaoperativa',
-                Field('descrizione','string',length=255,required=True,label=T('descrizione')),
-                Field('responsabile','string',required=True,label=T('Responsabile')),
-                auth.signature,
-                format='%(descrizione)s',
-               )
-db.unitaoperativa.descrizione.requires=IS_NOT_EMPTY()
-db.unitaoperativa.descrizione.requires=IS_NOT_IN_DB(db,'unitaoperativa.descrizione')
 
 #Tests materials
 db.define_table('materiali',
-                Field('materiale',required=True),
-                Field('sigla',required=True),
+                Field('materiale',required=True, label=T('Sample material')),
+                Field('sigla',required=True, label=T('Initial')),
                 Field('id_unitaoperativa','reference unitaoperativa'),
                 auth.signature,
-                format='%(sigla)s - %(materiale)s',
+                format='%(sigla)s - ',
                )
 db.materiali.materiale.reqires=IS_NOT_EMPTY()
 db.materiali.sigla.reqires=IS_NOT_EMPTY()
@@ -136,7 +139,7 @@ db.materiali.sigla.reqires=IS_NOT_EMPTY()
 
 # Tests methods
 db.define_table('metodi',
-                Field('metodo',required=True),
+                Field('metodo',required=True, label=T('Method')),
                 Field('id_unitaoperativa','reference unitaoperativa'),
                 auth.signature,
                 format='%(metodo)s'
@@ -146,8 +149,8 @@ db.metodi.metodo.requres=IS_NOT_EMPTY()
 
 #Containers
 db.define_table('contenitori',
-                Field('contenitore',required=True),
-                Field('immagine','upload',autodelete=True),
+                Field('contenitore',required=True, label=T('Container')),
+                Field('immagine','upload',autodelete=True, label=T('Image')),
                 Field('id_unitaoperativa','reference unitaoperativa'),
                 auth.signature,
                 format='%(contenitore)s'
@@ -158,10 +161,10 @@ db.contenitori.immagine.requires=IS_EMPTY_OR(IS_IMAGE(maxsize=(300,300)))
 
 #Departements units
 db.define_table('settori',
-                Field('settore',required=True),
-                Field('responsabile'),
-                Field('sos_responsabile'),
-                Field('telefono'),
+                Field('settore',required=True, label=T('Area')),
+                Field('responsabile', label=T('Director')),
+                Field('sos_responsabile', label=T('Director substitute')),
+                Field('telefono', label=T('Phone number')),
                 Field('mail',requires = IS_EMAIL(error_message='email non valida')),
                 Field('id_unitaoperativa','reference unitaoperativa'),
                 format='%(settore)s'
@@ -171,16 +174,16 @@ db.settori.settore.requires=IS_NOT_EMPTY()
 
 #tests
 db.define_table('esami',
-                Field('analita',required=True,label=T('Descrizione analisi')),
-                Field('search_keywords',required=True,label='Parole chiave per ricerca'),
-                Field('attivo','boolean',required=True,default=False,label='Attiva Vasulizzazione completa'),
+                Field('analita',required=True,label=T('Description')),
+                Field('search_keywords',required=True,label=T('Search keyword')),
+                Field('attivo','boolean',required=True,default=False,label=T('Enable full view')),
                 Field('id_unitaoperativa','reference unitaoperativa',required=True,label='Unità operativa'),
                 Field('id_materiali','reference materiali',required=True,label='Materiale'),
                 Field('id_contenitore','reference contenitori',required=True,label='Contenitore'),
                 Field('id_metodo','reference metodi',required=True,label='Metodo'),
                 Field('id_settore','reference settori',required=True,label='Settore'),
                 Field('codice_metafora',label='Cocice analisi in concerto'),
-                Field('codice_DM',label='DM code'),
+                Field('codice_DM',label='Codice Nomenclatore Aziendale'),
                 Field('tariffa_DM',label='Tariffa DM'),
                 #
                 Field('eseguibile_urgenza','boolean',default=False,label='Esame eseguibile in urgenza'),
@@ -203,12 +206,12 @@ db.define_table('esami',
                 Field('giorni_effettuazione',label='Giorni di effettuazione'),
                 Field('udm_tempo_attesa',label='Unità di misura per tempo di refertazione (giorni, ore ..)'),
                 Field('tempo_refertazione',label='Tempo di refertaznione in routine'),
-                Field('tempo_refertazione_urgenza',label='Tempo di refertazione in urgenza'),
+                Field('tempo_refertazione_urgenza',label='Tempo di refertazione in urgenza min.'),
                 Field('conservazione','text',label='Modalità di conservazione'),
                 #
-                Field('veq','text',label='Veq eseguite'),
+                Field('veq', 'text', label='Veq eseguite'),
                 Field('note','text'),
-                Field('numero_revisione',label='Numero di revisone'),
+                Field('numero_revisione', label='Numero di revisone', default='0'),
                 auth.signature,
                 format='%(analita)s',
                 )
@@ -224,8 +227,10 @@ db.esami.id_settore.requires=IS_IN_DB(db,db.settori.id,'%(settore)s')
 db.esami.id_unitaoperativa.requires=IS_NOT_EMPTY()
 db.esami.id_unitaoperativa.requires=IS_IN_DB(db,db.unitaoperativa.id,'%(descrizione)s')
 db.esami.search_keywords.requires=IS_NOT_EMPTY()
-db.esami.moduli_richiesta.requires = IS_EMPTY_OR(IS_UPLOAD_FILENAME(extension='pdf'))
+db.esami.moduli_richiesta.requires= IS_EMPTY_OR(IS_UPLOAD_FILENAME(extension='pdf'))
 
+
+db.esami.codice_metafora.requires= IS_NOT_EMPTY()
 
 ## after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
