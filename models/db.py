@@ -1,14 +1,5 @@
 # -*- coding: utf-8 -*-
 
-#########################################################################
-## This scaffolding model makes your app work on Google App Engine too
-## File is released under public domain and you can use without limitations
-#########################################################################
-
-## if SSL/HTTPS is properly configured and you want all HTTP requests to
-## be redirected to HTTPS, uncomment the line below:
-# request.requires_https()
-
 ## app configuration made easy. Look inside private/appconfig.ini
 from gluon.contrib.appconfig import AppConfig
 ## once in production, remove reload=True to gain full speed
@@ -107,11 +98,6 @@ auth.settings.actions_disabled.append('register')
 ## >>> for row in rows: print row.id, row.myfield
 #########################################################################
 
-
-
-
-
-
 # uploaded file handling
 db.define_table('local_file',
                  Field('file_name','upload',required=True,autodelete=True),
@@ -121,8 +107,6 @@ db.define_table('local_file',
                  Field('tipo','list:string',required=True),
                 )
 db.local_file.tipo.requires=IS_IN_SET(('immagine','PDF','altro'))
-
-
 
 #Tests materials
 db.define_table('materiali',
@@ -135,8 +119,6 @@ db.define_table('materiali',
 db.materiali.materiale.reqires=IS_NOT_EMPTY()
 db.materiali.sigla.reqires=IS_NOT_EMPTY()
 
-
-
 # Tests methods
 db.define_table('metodi',
                 Field('metodo',required=True, label=T('Method')),
@@ -145,7 +127,6 @@ db.define_table('metodi',
                 format='%(metodo)s'
                 )
 db.metodi.metodo.requres=IS_NOT_EMPTY()
-
 
 #Containers
 db.define_table('contenitori',
@@ -158,7 +139,6 @@ db.define_table('contenitori',
 db.contenitori.contenitore.requires=IS_NOT_EMPTY()
 db.contenitori.immagine.requires=IS_EMPTY_OR(IS_IMAGE(maxsize=(300,300)))
 
-
 #Departements units
 db.define_table('settori',
                 Field('settore',required=True, label=T('Area')),
@@ -170,7 +150,6 @@ db.define_table('settori',
                 format='%(settore)s'
                 )
 db.settori.settore.requires=IS_NOT_EMPTY()
-
 
 #tests
 db.define_table('esami',
@@ -228,8 +207,6 @@ db.esami.id_unitaoperativa.requires=IS_NOT_EMPTY()
 db.esami.id_unitaoperativa.requires=IS_IN_DB(db,db.unitaoperativa.id,'%(descrizione)s')
 db.esami.search_keywords.requires=IS_NOT_EMPTY()
 db.esami.moduli_richiesta.requires= IS_EMPTY_OR(IS_UPLOAD_FILENAME(extension='pdf'))
-
-
 db.esami.codice_metafora.requires= IS_NOT_EMPTY()
 
 ## after defining tables, uncomment below to enable auditing
